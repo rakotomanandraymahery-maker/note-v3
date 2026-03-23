@@ -1,4 +1,5 @@
-INSERT INTO candidat (nom, prenom, adresse, lien_photo) VALUES
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++INSERT INTO candidat (nom, prenom, adresse, lien_photo) VALUES
 ('Rakoto', 'Jean', 'Antananarivo', 'photo1.jpg'),
 ('Rabe', 'Marie', 'Fianarantsoa', 'photo2.jpg');
 

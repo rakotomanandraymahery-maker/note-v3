@@ -29,7 +29,7 @@ public class CandidatCtrl {
         }
         
         model.addAttribute("activePage", "candidat");
-        return "candidat/candidat";
+        return "candidat/modern-candidat";
     }
 
     @PostMapping("/save")
@@ -65,7 +65,7 @@ public class CandidatCtrl {
             model.addAttribute("candidats", candidats);
             model.addAttribute("candidat", candidatOpt.get());
             model.addAttribute("activePage", "candidat");
-            return "candidat/candidat";
+            return "candidat/modern-candidat";
         } else {
             redirectAttributes.addFlashAttribute("error", "Candidat non trouvé");
             return "redirect:/candidat";

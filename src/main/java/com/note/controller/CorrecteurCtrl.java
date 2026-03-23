@@ -29,7 +29,7 @@ public class CorrecteurCtrl {
         }
         
         model.addAttribute("activePage", "correcteur");
-        return "correcteur/correcteur";
+        return "correcteur/modern-correcteur";
     }
 
     @PostMapping("/save")
@@ -62,7 +62,7 @@ public class CorrecteurCtrl {
             model.addAttribute("correcteurs", correcteurs);
             model.addAttribute("correcteur", correcteurOpt.get());
             model.addAttribute("activePage", "correcteur");
-            return "correcteur/correcteur";
+            return "correcteur/modern-correcteur";
         } else {
             redirectAttributes.addFlashAttribute("error", "Correcteur non trouvé");
             return "redirect:/correcteur";

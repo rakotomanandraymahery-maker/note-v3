@@ -39,18 +39,28 @@ public class NoteCtrl {
         List<Matiere> matieres = matiereServ.findAll();
         List<Examen> examens = examenServ.findAll();
         
+        // Calcul des statistiques
+        double moyenne = 0.0;
+        double maxNote = 0.0;
+        if (!notes.isEmpty()) {
+            moyenne = notes.stream().mapToDouble(Note::getNote).average().orElse(0.0);
+            maxNote = notes.stream().mapToDouble(Note::getNote).max().orElse(0.0);
+        }
+        
         model.addAttribute("notes", notes);
         model.addAttribute("correcteurs", correcteurs);
         model.addAttribute("candidats", candidats);
         model.addAttribute("matieres", matieres);
         model.addAttribute("examens", examens);
+        model.addAttribute("moyenne", moyenne);
+        model.addAttribute("maxNote", maxNote);
         
         if (!model.containsAttribute("note")) {
             model.addAttribute("note", new Note());
         }
         
         model.addAttribute("activePage", "note");
-        return "note/note";
+        return "note/modern-note";
     }
 
     @PostMapping("/save")
@@ -118,14 +128,24 @@ public class NoteCtrl {
             List<Matiere> matieres = matiereServ.findAll();
             List<Examen> examens = examenServ.findAll();
             
+            // Calcul des statistiques
+            double moyenne = 0.0;
+            double maxNote = 0.0;
+            if (!notes.isEmpty()) {
+                moyenne = notes.stream().mapToDouble(Note::getNote).average().orElse(0.0);
+                maxNote = notes.stream().mapToDouble(Note::getNote).max().orElse(0.0);
+            }
+            
             model.addAttribute("notes", notes);
             model.addAttribute("correcteurs", correcteurs);
             model.addAttribute("candidats", candidats);
             model.addAttribute("matieres", matieres);
             model.addAttribute("examens", examens);
             model.addAttribute("note", noteOpt.get());
+            model.addAttribute("moyenne", moyenne);
+            model.addAttribute("maxNote", maxNote);
             model.addAttribute("activePage", "note");
-            return "note/note";
+            return "note/modern-note";
         } else {
             redirectAttributes.addFlashAttribute("error", "Note non trouvée");
             return "redirect:/note";

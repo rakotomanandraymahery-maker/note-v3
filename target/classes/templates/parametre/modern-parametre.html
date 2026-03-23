@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Paramètres - EX-NOTE</title>
+    <link rel="stylesheet" th:href="@{/css/modern-base.css}">
+    <link rel="stylesheet" th:href="@{/css/modern-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/modern-crud.css}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+
+<body class="parametre-page">
+    <div th:replace="~{fragments/modern-navbar :: navbar}"></div>
+    
+    <div class="crud-container">
+        <!-- Header Section -->
+        <div class="crud-header animate-fade-in">
+            <h1 class="crud-title">
+                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Gestion des Paramètres
+            </h1>
+            <button class="btn-add" onclick="toggleForm()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Ajouter un paramètre
+            </button>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success animate-fade-in">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-error animate-fade-in">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid animate-slide-in">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" th:text="${#lists.size(parametres)}">0</div>
+                <div class="stat-label">Total Paramètres</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <div class="stat-value" th:text="${matieresConfigurees}">0</div>
+                <div class="stat-label">Matières Configurées</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" th:text="${reglesSuperieurOuEgal}">0</div>
+                <div class="stat-label">Règles "Supérieur ou égal"</div>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-card" id="parametreForm" th:classappend="${parametre.id != null} ? 'show' : ''">
+            <div class="form-header">
+                <h2 class="form-title" th:text="${parametre.id != null ? 'Modifier un paramètre' : 'Ajouter un paramètre'}">
+                    Ajouter un paramètre
+                </h2>
+                <button class="btn-close-form" onclick="toggleForm()">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <form class="form-grid" th:action="@{/parametre/save}" method="post" th:object="${parametre}">
+                <input type="hidden" th:field="*{id}" />
+                
+                <div class="form-group">
+                    <label for="matiere" class="form-label">Matière</label>
+                    <select id="matiere" th:field="*{matiere}" class="form-control" required>
+                        <option value="">Sélectionner une matière</option>
+                        <option th:each="matiere : ${matieres}" 
+                                th:value="${matiere.id}"
+                                th:text="${matiere.nom}"
+                                th:selected="${parametre.matiere != null and matiere.id == parametre.matiere.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="operateur" class="form-label">Opérateur</label>
+                    <select id="operateur" th:field="*{operateur}" class="form-control" required>
+                        <option value="">Sélectionner un opérateur</option>
+                        <option th:each="operateur : ${operateurs}" 
+                                th:value="${operateur.id}"
+                                th:text="${operateur.operateur}"
+                                th:selected="${parametre.operateur != null and operateur.id == parametre.operateur.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="seuil" class="form-label">Seuil de différence</label>
+                    <input type="number" id="seuil" th:field="*{seuilSumDiff}" class="form-control" required 
+                           step="0.01" min="0" placeholder="Ex: 5.0" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="resolution" class="form-label">Résolution</label>
+                    <select id="resolution" th:field="*{resolution}" class="form-control" required>
+                        <option value="">Sélectionner une résolution</option>
+                        <option th:each="resolution : ${resolutions}" 
+                                th:value="${resolution.id}"
+                                th:text="${resolution.resolution}"
+                                th:selected="${parametre.resolution != null and resolution.id == parametre.resolution.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-search" th:text="${parametre.id != null ? 'Modifier' : 'Ajouter'}">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span th:text="${parametre.id != null ? 'Modifier' : 'Ajouter'}">Ajouter</span>
+                    </button>
+                    <a th:href="@{/parametre/cancel}" class="btn-reset">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-card animate-fade-in">
+            <div th:if="${!parametres.empty}">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Matière</th>
+                            <th>Condition</th>
+                            <th>Résolution</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="parametre : ${parametres}">
+                            <td th:text="${parametre.id}">1</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="avatar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                                        <span th:text="${#strings.substring(parametre.matiere.nom, 0, 2).toUpperCase()}">MA</span>
+                                    </div>
+                                    <div>
+                                        <div class="user-name" th:text="${parametre.matiere.nom}">Mathématiques</div>
+                                        <div class="user-email">ID: <span th:text="${parametre.id}">1</span></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                    <span class="badge badge-info" th:text="${parametre.operateur.operateur}">>=</span>
+                                    <span class="badge badge-primary" th:text="${'Seuil: ' + #numbers.formatDecimal(parametre.seuilSumDiff, 1, 2)}">Seuil: 5.0</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span th:if="${parametre.resolution.resolution == 'plus petit'}" class="badge badge-success">
+                                    Plus petit
+                                </span>
+                                <span th:if="${parametre.resolution.resolution == 'moyenne'}" class="badge badge-warning">
+                                    Moyenne
+                                </span>
+                                <span th:if="${parametre.resolution.resolution == 'plus grand'}" class="badge badge-error">
+                                    Plus grand
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a th:href="@{/parametre/edit/{id}(id=${parametre.id})}" class="btn-action btn-edit" title="Modifier">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </a>
+                                    <a th:href="@{/parametre/delete/{id}(id=${parametre.id})}" 
+                                       class="btn-action btn-delete" 
+                                       title="Supprimer"
+                                       onclick="return confirm('Supprimer ce paramètre ?')">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${parametres.empty}" class="empty-state">
+                <div class="empty-state-icon">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <div class="empty-state-title">Aucun paramètre configuré</div>
+                <div class="empty-state-text">
+                    Commencez par ajouter un paramètre en cliquant sur le bouton "Ajouter un paramètre"
+                </div>
+                <button class="btn-add" onclick="toggleForm()">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Ajouter le premier paramètre
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const form = document.getElementById('parametreForm');
+            form.classList.toggle('show');
+            
+            // Scroll to form if opening
+            if (form.classList.contains('show')) {
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+
+        // Auto-close form on successful submit
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.form-grid');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    const submitBtn = this.querySelector('.btn-search');
+                    const originalContent = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<div class="spinner"></div> Enregistrement...';
+                    submitBtn.disabled = true;
+                });
+            }
+        });
+
+        // Add animations to table rows
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.modern-table tbody tr');
+            rows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.1}s`;
+                row.classList.add('animate-fade-in');
+            });
+        });
+
+        // Show form if editing
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isEditing = urlParams.get('edit') === 'true' || document.querySelector('.form-card.show');
+            if (isEditing) {
+                const form = document.getElementById('parametreForm');
+                form.classList.add('show');
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

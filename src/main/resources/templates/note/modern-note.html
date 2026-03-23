@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Notes - EX-NOTE</title>
+    <link rel="stylesheet" th:href="@{/css/modern-base.css}">
+    <link rel="stylesheet" th:href="@{/css/modern-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/modern-notes.css}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📓</text></svg>">
+</head>
+
+<body>
+    <div th:replace="~{fragments/modern-navbar :: navbar}"></div>
+    
+    <div class="notes-container">
+        <!-- Header Section -->
+        <div class="notes-header animate-fade-in">
+            <h1 class="notes-title">
+                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                Gestion des Notes
+            </h1>
+            <button class="btn-add-note" onclick="toggleForm()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Ajouter une note
+            </button>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success animate-fade-in">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-error animate-fade-in">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="notes-stats animate-slide-in">
+            <div class="stat-card">
+                <div class="stat-icon notes">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" th:text="${#lists.size(notes)}">0</div>
+                <div class="stat-label">Total Notes</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon average">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" th:text="${#numbers.formatDecimal(moyenne, 1, 2)}">0</div>
+                <div class="stat-label">Moyenne</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon highest">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                </div>
+                <div class="stat-value" th:text="${#numbers.formatDecimal(maxNote, 1, 2)}">0</div>
+                <div class="stat-label">Plus Haute</div>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="note-form-card" id="noteForm" th:classappend="${note.id != null} ? 'show' : ''">
+            <div class="note-form-header">
+                <h2 class="note-form-title" th:text="${note.id != null ? 'Modifier une note' : 'Ajouter une note'}">
+                    Ajouter une note
+                </h2>
+                <button class="btn-close-form" onclick="toggleForm()">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <form class="note-form-grid" th:action="@{/note/save}" method="post">
+                <input type="hidden" name="id" th:value="${note.id}" />
+                
+                <div class="form-group">
+                    <label for="correcteur" class="form-label">Correcteur</label>
+                    <select id="correcteur" name="correcteurId" class="form-control" required>
+                        <option value="">Sélectionner un correcteur</option>
+                        <option th:each="correcteur : ${correcteurs}" 
+                                th:value="${correcteur.id}"
+                                th:text="${correcteur.prenom + ' ' + correcteur.nom}"
+                                th:selected="${note.correcteur != null and correcteur.id == note.correcteur.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="candidat" class="form-label">Candidat</label>
+                    <select id="candidat" name="candidatId" class="form-control" required>
+                        <option value="">Sélectionner un candidat</option>
+                        <option th:each="candidat : ${candidats}" 
+                                th:value="${candidat.id}"
+                                th:text="${candidat.prenom + ' ' + candidat.nom}"
+                                th:selected="${note.candidat != null and candidat.id == note.candidat.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="matiere" class="form-label">Matière</label>
+                    <select id="matiere" name="matiereId" class="form-control" required>
+                        <option value="">Sélectionner une matière</option>
+                        <option th:each="matiere : ${matieres}" 
+                                th:value="${matiere.id}"
+                                th:text="${matiere.nom}"
+                                th:selected="${note.matiere != null and matiere.id == note.matiere.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="examen" class="form-label">Examen</label>
+                    <select id="examen" name="examenId" class="form-control" required>
+                        <option value="">Sélectionner un examen</option>
+                        <option th:each="examen : ${examens}" 
+                                th:value="${examen.id}"
+                                th:text="${examen.nom}"
+                                th:selected="${note.examen != null and examen.id == note.examen.id}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="noteValue" class="form-label">Note</label>
+                    <input type="number" id="noteValue" name="noteValue" th:value="${note.note}" 
+                           class="form-control" step="0.01" min="0" max="20" required />
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-search" th:text="${note.id != null ? 'Modifier' : 'Ajouter'}">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span th:text="${note.id != null ? 'Modifier' : 'Ajouter'}">Ajouter</span>
+                    </button>
+                    <a th:href="@{/note/cancel}" class="btn-reset">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Section -->
+        <div class="notes-table-card animate-fade-in">
+            <div th:if="${!notes.empty}">
+                <table class="notes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Correcteur</th>
+                            <th>Candidat</th>
+                            <th>Matière</th>
+                            <th>Examen</th>
+                            <th>Note</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="note : ${notes}">
+                            <td th:text="${note.id}">1</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 32px; height: 32px; background: var(--primary-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-600); font-weight: 600; font-size: 0.75rem;">
+                                        <span th:text="${#strings.substring(note.correcteur.prenom, 0, 1) + #strings.substring(note.correcteur.nom, 0, 1)}">JD</span>
+                                    </div>
+                                    <span th:text="${note.correcteur.prenom + ' ' + note.correcteur.nom}">Jean Dupont</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 32px; height: 32px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">
+                                        <span th:text="${#strings.substring(note.candidat.prenom, 0, 1) + #strings.substring(note.candidat.nom, 0, 1)}">SM</span>
+                                    </div>
+                                    <span th:text="${note.candidat.prenom + ' ' + note.candidat.nom}">Sophie Martin</span>
+                                </div>
+                            </td>
+                            <td th:text="${note.matiere.nom}">Mathématiques</td>
+                            <td th:text="${note.examen.nom}">Examen final</td>
+                            <td>
+                                <span class="note-badge" 
+                                      th:classappend="${note.note >= 10 ? (note.note >= 15 ? 'high' : 'medium') : 'low'}"
+                                      th:text="${#numbers.formatDecimal(note.note, 1, 2)}">15.5</span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a th:href="@{/note/edit/{id}(id=${note.id})}" class="btn-action btn-edit" title="Modifier">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </a>
+                                    <a th:href="@{/note/delete/{id}(id=${note.id})}" 
+                                       class="btn-action btn-delete" 
+                                       title="Supprimer"
+                                       onclick="return confirm('Supprimer cette note ?')">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${notes.empty}" class="empty-notes">
+                <div class="empty-notes-icon">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div class="empty-notes-title">Aucune note enregistrée</div>
+                <div class="empty-notes-text">
+                    Commencez par ajouter une note en cliquant sur le bouton "Ajouter une note"
+                </div>
+                <button class="btn-add-note" onclick="toggleForm()">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Ajouter la première note
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const form = document.getElementById('noteForm');
+            form.classList.toggle('show');
+            
+            // Scroll to form if opening
+            if (form.classList.contains('show')) {
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+
+        // Auto-close form on successful submit
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.note-form-grid');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    const submitBtn = this.querySelector('.btn-search');
+                    const originalContent = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<div class="spinner"></div> Enregistrement...';
+                    submitBtn.disabled = true;
+                    
+                    // Reset after 2 seconds (for demo)
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalContent;
+                        submitBtn.disabled = false;
+                    }, 2000);
+                });
+            }
+        });
+
+        // Add animations to table rows
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.notes-table tbody tr');
+            rows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.1}s`;
+                row.classList.add('animate-fade-in');
+            });
+        });
+
+        // Show form if editing
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isEditing = urlParams.get('edit') === 'true' || document.querySelector('.note-form-card.show');
+            if (isEditing) {
+                const form = document.getElementById('noteForm');
+                form.classList.add('show');
+                setTimeout(() => {
+                    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

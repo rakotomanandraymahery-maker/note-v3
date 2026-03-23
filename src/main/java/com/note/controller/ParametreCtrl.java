@@ -41,17 +41,25 @@ public class ParametreCtrl {
         List<Operateur> operateurs = operateurServ.findAll();
         List<Resolution> resolutions = resolutionServ.findAll();
         
+        // Calcul des statistiques
+        long matieresConfigurees = matieres.stream().count();
+        long reglesSuperieurOuEgal = parametres.stream()
+                .filter(p -> p.getOperateur() != null && ">=".equals(p.getOperateur().getOperateur()))
+                .count();
+        
         model.addAttribute("parametres", parametres);
         model.addAttribute("matieres", matieres);
         model.addAttribute("operateurs", operateurs);
         model.addAttribute("resolutions", resolutions);
+        model.addAttribute("matieresConfigurees", matieresConfigurees);
+        model.addAttribute("reglesSuperieurOuEgal", reglesSuperieurOuEgal);
         
         if (!model.containsAttribute("parametre")) {
             model.addAttribute("parametre", new Parametre());
         }
         
         model.addAttribute("activePage", "parametre");
-        return "parametre/parametre";
+        return "parametre/modern-parametre";
     }
 
     @PostMapping("/save")
@@ -113,13 +121,21 @@ public class ParametreCtrl {
             List<Operateur> operateurs = operateurServ.findAll();
             List<Resolution> resolutions = resolutionServ.findAll();
             
+            // Calcul des statistiques
+            long matieresConfigurees = matieres.stream().count();
+            long reglesSuperieurOuEgal = parametres.stream()
+                    .filter(p -> p.getOperateur() != null && ">=".equals(p.getOperateur().getOperateur()))
+                    .count();
+            
             model.addAttribute("parametres", parametres);
             model.addAttribute("matieres", matieres);
             model.addAttribute("operateurs", operateurs);
             model.addAttribute("resolutions", resolutions);
             model.addAttribute("parametre", parametreOpt.get());
+            model.addAttribute("matieresConfigurees", matieresConfigurees);
+            model.addAttribute("reglesSuperieurOuEgal", reglesSuperieurOuEgal);
             model.addAttribute("activePage", "parametre");
-            return "parametre/parametre";
+            return "parametre/modern-parametre";
         } else {
             redirectAttributes.addFlashAttribute("error", "Paramètre non trouvé");
             return "redirect:/parametre";

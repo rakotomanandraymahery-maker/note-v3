@@ -22,14 +22,25 @@ public class MatiereCtrl {
     @GetMapping
     public String pageMatiere(Model model) {
         List<Matiere> matieres = matiereServ.findAll();
+        
+        // Calcul des statistiques
+        double totalCoefficients = 0.0;
+        double moyenneCoefficients = 0.0;
+        if (!matieres.isEmpty()) {
+            totalCoefficients = matieres.stream().mapToDouble(Matiere::getCoef).sum();
+            moyenneCoefficients = matieres.stream().mapToDouble(Matiere::getCoef).average().orElse(0.0);
+        }
+        
         model.addAttribute("matieres", matieres);
+        model.addAttribute("totalCoefficients", totalCoefficients);
+        model.addAttribute("moyenneCoefficients", moyenneCoefficients);
         
         if (!model.containsAttribute("matiere")) {
             model.addAttribute("matiere", new Matiere());
         }
         
         model.addAttribute("activePage", "matiere");
-        return "matiere/matiere";
+        return "matiere/modern-matiere";
     }
 
     @PostMapping("/save")
@@ -59,10 +70,21 @@ public class MatiereCtrl {
         Optional<Matiere> matiereOpt = matiereServ.findById(id);
         if (matiereOpt.isPresent()) {
             List<Matiere> matieres = matiereServ.findAll();
+            
+            // Calcul des statistiques
+            double totalCoefficients = 0.0;
+            double moyenneCoefficients = 0.0;
+            if (!matieres.isEmpty()) {
+                totalCoefficients = matieres.stream().mapToDouble(Matiere::getCoef).sum();
+                moyenneCoefficients = matieres.stream().mapToDouble(Matiere::getCoef).average().orElse(0.0);
+            }
+            
             model.addAttribute("matieres", matieres);
             model.addAttribute("matiere", matiereOpt.get());
+            model.addAttribute("totalCoefficients", totalCoefficients);
+            model.addAttribute("moyenneCoefficients", moyenneCoefficients);
             model.addAttribute("activePage", "matiere");
-            return "matiere/matiere";
+            return "matiere/modern-matiere";
         } else {
             redirectAttributes.addFlashAttribute("error", "Matière non trouvée");
             return "redirect:/matiere";

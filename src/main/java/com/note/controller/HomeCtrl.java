@@ -48,7 +48,7 @@ public class HomeCtrl {
         model.addAttribute("examens", examens);
         model.addAttribute("activePage", "accueil");
         
-        return "index";
+        return "modern-index";
     }
 
     @PostMapping("/calculer")
@@ -90,6 +90,6 @@ public class HomeCtrl {
         }
         
         model.addAttribute("activePage", "accueil");
-        return "index";
+        return "modern-index";
     }
 }
