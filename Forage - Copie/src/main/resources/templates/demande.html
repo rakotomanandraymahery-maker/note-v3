@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Demandes</title>
+    <link rel="stylesheet" th:href="@{/css/demande.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: navbar (activePage=${activePage})}"></div>
+
+    <div class="main-content">
+
+        <div class="demande-block">
+
+            <div class="form-section">
+                <h2>Insertion/Modification Demande</h2>
+                <form id="demandeForm" th:action="@{/demandes/save}" method="post">
+                    <input type="hidden" id="demandeId" name="id" th:value="${selectedDemande != null ? selectedDemande.id : ''}">
+                    
+                    <div class="form-group">
+                        <label for="clientId">Client:</label>
+                        <select id="clientId" name="clientId" required>
+                            <option value="">Client</option>
+                            <option th:each="client : ${clients}" 
+                                    th:value="${client.id}" 
+                                    th:text="${client.nom}"
+                                    th:selected="${selectedDemande != null and selectedDemande.client != null and selectedDemande.client.id == client.id}">
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lieu">Lieu:</label>
+                        <input type="text" id="lieu" name="lieu" th:value="${selectedDemande != null ? selectedDemande.lieu : ''}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="district">District:</label>
+                        <input type="text" id="district" name="district" th:value="${selectedDemande != null ? selectedDemande.district : ''}" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">Enregistrer</button>
+                        <button type="button" class="btn-clear" onclick="clearForm()">Vider</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="list-section" th:if="${demandes != null && !demandes.isEmpty}">
+                <h2>Liste des Demandes</h2>
+                <table class="demande-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Lieu</th>
+                            <th>District</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="demande : ${demandes}">
+                            <td th:text="${demande.id}"></td>
+                            <td th:text="${#temporals.format(demande.date, 'dd/MM/yy HH:mm')}"></td>
+                            <td th:text="${demande.client != null ? demande.client.nom : 'N/A'}"></td>
+                            <td th:text="${demande.lieu}"></td>
+                            <td th:text="${demande.district}"></td>
+                            <td th:text="${demande.getStatutActuel() != null ? demande.getStatutActuel().nom : 'N/A'}"></td>
+                            <td class="actions">
+                                <button class="btn-edit"><a th:href="@{/demandes/{id}(id=${demande.id})}">Modifier</a></button>
+                                <button class="btn-delete"><a th:href="@{/demandes/delete/{id}(id=${demande.id})}">Supprimer</a></button>
+                                <button class="btn-edit"><a th:href="@{/demandes/{id}/historique(id=${demande.id})}">Historique</a></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="details-section" th:if="${selectedDemande != null and demandeStatuts != null and demandeStatuts.size() > 0}">
+         
+            <h3>Liste des historiques statuts de Demande ID : <strong th:text="${selectedDemande.id}">User</strong></h3>
+            
+            <table class="demande-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th>Observation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="demandeStatut : ${demandeStatuts}">
+                        <td th:text="${demandeStatut.id}"></td>
+                        <td th:text="${demandeStatut.demande.client.nom}"></td>
+                        <td th:text="${demandeStatut.statut.nom}"></td>
+                        <td th:text="${demandeStatut.dateHeure}"></td>
+                        <td th:text="${demandeStatut.observation}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${selectedDemande != null and (demandeStatuts == null or demandeStatuts.size() == 0)}">
+            <p style="margin-left: 40%; margin-top: 5%;">Aucun Historique de statut pour Demande ID :<strong th:text="${selectedDemande.id} + .">User</strong></p>
+        </div>
+
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+    
+    <script>
+        
+        function clearForm() {
+            document.getElementById('demandeId').value = '';
+            document.getElementById('clientId').value = '';
+            document.getElementById('lieu').value = '';
+            document.getElementById('district').value = '';
+        }
+        
+    </script>
+</body>
+</html>

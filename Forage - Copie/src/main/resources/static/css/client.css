@@ -1,0 +1,7 @@
+@import url('navbar.css');
+@import url('devis.css');
+
+/* Specialized styles for client page if needed */
+.client-table {
+    margin-top: 2rem;
+}

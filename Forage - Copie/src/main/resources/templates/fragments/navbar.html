@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="navbar" class="navbar" th:classappend="${activePage} ? 'active-' + ${activePage} : ''">
+    <div class="navbar-header">
+        <!-- <h1>ETU003519</h1> -->
+        <h3>Gestion Forage</h3>
+    </div>
+    
+    <ul class="nav-menu">
+        <li class="nav-item" th:classappend="${activePage == 'client'} ? 'active' : ''">
+            <a th:href="@{/}">
+                <span class="nav-text">Client</span>
+            </a>
+        </li>
+
+        <li class="nav-item" th:classappend="${activePage == 'demande'} ? 'active' : ''">
+            <a th:href="@{/demandes}">
+                <span class="nav-text">Demande</span>
+            </a>
+        </li>
+
+        <li class="nav-item" th:classappend="${activePage == 'devis'} ? 'active' : ''">
+            <a th:href="@{/devis}">
+                <span class="nav-text">Devis</span>
+            </a>
+        </li>
+
+        <li class="nav-item" th:classappend="${activePage == 'statut'} ? 'active' : ''">
+            <a th:href="@{/demandes-statuts}">
+                <span class="nav-text">Statut</span>
+            </a>
+        </li>
+
+        <li class="nav-item" th:classappend="${activePage == 'chiffreAffaire'} ? 'active' : ''">
+            <a th:href="@{/devis/chiffreAffaire}">
+                <span class="nav-text">Chiffre Affaire</span>
+            </a>
+        </li>
+
+
+
+    </ul>
+    
+</div>
+
+</html>

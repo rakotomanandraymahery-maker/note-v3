@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Demandes</title>
+    <link rel="stylesheet" th:href="@{/css/demande.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: navbar (activePage=${activePage})}"></div>
+
+    <div class="main-content">
+    
+        <div class="form-section">
+            <h2>Changement Status</h2>
+            <form id="demandeForm" th:action="@{/demandes-statuts/ajouter-statut}" method="post">
+
+                <!--    @PathVariable String demandeId,
+            @RequestParam Long statutId,
+            @RequestParam(required = false) LocalDateTime dateHeure,
+            @RequestParam(required = false) String observation) {
+             -->
+                <div class="form-group">
+                    <label for="demandeId">Demande :</label>
+                    <select id="demandeId" name="demandeId" required>
+                        <option th:each="demande : ${demandes}" 
+                                th:value="${demande.id}" 
+                                th:text="${demande.id} + ' - ' +   ${demande.client.nom} + ' - ' +  ${demande.lieu}"></option>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="statutId">Statut :</label>
+                    <select id="statutId" name="statutId" required>
+                        <option th:each="statut : ${statuts}" 
+                                th:value="${statut.id}" 
+                                th:text="${statut.id} + ' - ' +  ${statut.nom}"></option>
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="observation">Observation:</label>
+                    <input type="text" id="observation" name="observation" >
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">Valider</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- <div class="list-section">
+            <h2>Liste des Demandes</h2>
+            <table class="demande-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Lieu</th>
+                        <th>District</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="demande : ${demandes}">
+                        <td th:text="${demande.id}"></td>
+                        <td th:text="${demande.date}"></td>
+                        <td th:text="${demande.client != null ? demande.client.nom : 'N/A'}"></td>
+                        <td th:text="${demande.lieu}"></td>
+                        <td th:text="${demande.district}"></td>
+                        <td th:text="${demande.getStatutActuel.nom}"></td>
+                        <td class="actions">
+                            <button class="btn-edit"><a th:href="@{/demandes/{id}(id=${demande.id})}">Modifier</a></button>
+                            <button class="btn-delete"><a th:href="@{/demandes/delete/{id}(id=${demande.id})}">Supprimer</a></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        Section 3: Message de confirmation (optionnel) 
+        <div id="message" class="message" style="display: none;"></div> -->
+    </div>
+    
+</body>
+</html>

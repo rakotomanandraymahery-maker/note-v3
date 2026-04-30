@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création Devis</title>
+    <link rel="stylesheet" th:href="@{/css/devis.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar (activePage=${activePage})}"></div>
+    
+    <div class="main-content">
+
+        <form id="devisForm">
+            <h2>Insertion Devis</h2>
+
+
+
+            <div class="form">
+                <div class="form-group">
+                    <label for="demandeId">Demande :</label>
+                    <input type="text" id="demandeId" name="demandeId" placeholder="Entrez l'ID de la demande...">
+                </div>
+                <div id="resultats" class="resultats-container"></div>
+
+                <div class="form-group">
+                    <label for="devisType">Type Devis :</label>
+                    <select id="devisType" name="devisType" required>
+                        <option value="">Sélectionnez un type</option>
+                        <option th:each="type : ${devisTypes}" th:value="${type.id}" th:text="${type.nom}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <label>Détails du devis :</label>
+                <table id="detailsTable">
+                    <thead>
+                        <tr>
+                            <th>Libellé</th>
+                            <th>Prix Unitaire (PU)</th>
+                            <th>Quantité (Qte)</th>
+                            <th>Montant</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Les lignes seront ajoutées dynamiquement ici -->
+                    </tbody>
+                </table>
+                <button type="button" id="ajouterLigne">Ajouter une ligne</button>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" id="submitBtn">Valider le devis</button>
+            </div>
+        </form>
+
+        <div class="list-devis" th:if="${devis != null && !devis.isEmpty}">
+            <h2>Liste des Devis</h2>
+            <table class="client-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Type de Devis</th>
+                        <th>Demande</th>
+                        <!-- <th>Statut</th> -->
+                        <th>Montant</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="devi : ${devis}">
+                        <td th:text="${devi.id}"></td>
+                        <td th:text="${devi.dateHeure}"></td>
+                        <td th:text="${devi.devisType.nom}"></td>
+                        <td th:text="${devi.demande.client.nom}"></td>
+                        <!-- <td th:text="${devi.demande.getStatutActuel.nom}"></td> -->
+                        <td th:text="${devi.getTotal1()}"></td>
+                        <td class="actions">
+                            <button class="btn-delete"><a th:href="@{/devis/delete/{id}(id=${devi.id})}">Supprimer</a></button>
+                            <button class="btn-details"><a th:href="@{/devis/{id}(id=${devi.id})}">Details</a></button>
+                            <button class="btn-edit"><a th:href="@{/devis/accepter/{id}(id=${devi.id})}">Accepter</a></button>
+                            <button class="btn-delete"><a th:href="@{/devis/refuser/{id}(id=${devi.id})}">Refuser</a></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="devis-details" th:if="${devisDetails != null && !devisDetails.isEmpty}">
+            <h3>
+                Liste des details de Devis #
+                <strong th:text="${devisDetails[0].devis != null ? devisDetails[0].devis.id : 'N/A'}">
+                    ID
+                </strong>
+            </h3>
+                
+            <table class="demande-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Libelle</th>
+                        <th>PU</th>
+                        <th>Qte</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="devisDetail : ${devisDetails}">
+                        <td th:text="${devisDetail.id}"></td>
+                        <td th:text="${devisDetail.libelle}"></td>
+                        <td th:text="${devisDetail.pu}"></td>
+                        <td th:text="${devisDetail.qte}"></td>
+                        <td class="actions">
+                            <button class="btn-details"><a th:href="@{/devis/update/{id}(id=${devisDetail.id})}">Modifier</a></button>
+                            <button class="btn-delete"><a th:href="@{/devis/delete/details/{id}(id=${devisDetail.id})}">Supprimer</a></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="/js/devis.js"></script>
+</body>
+</html>

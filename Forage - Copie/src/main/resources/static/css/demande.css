@@ -1,0 +1,7 @@
+@import url('navbar.css');
+@import url('devis.css');
+
+/* Specialized styles for demande page if needed */
+.demande-table {
+    margin-top: 2rem;
+}

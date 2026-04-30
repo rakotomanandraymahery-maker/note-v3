@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création Devis</title>
+    <link rel="stylesheet" th:href="@{/css/devis.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar }"></div>
+    
+    <div class="main-content">
+        <div class="chiffreAffaire">
+            <h3 id="titre">Chiffre d' affaire : </h3>
+            <strong th:text="${chiffreAffaire}" id="montant" >0</strong> Ar
+        </div>
+    </div>
+
+</body>
+</html>
