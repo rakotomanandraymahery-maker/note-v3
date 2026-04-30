@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter détails devis</title>
+    <link rel="stylesheet" th:href="@{/css/devis.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    
+    <div class="main-content">
+    <h2>Ajouter détails au devis #<span th:text="${devis.id}"></span></h2>
+
+    <form id="detailsForm">
+
+        <input type="hidden" id="devisId" th:value="${devis.id}">
+
+            <div class="details-section">
+                <label>Détails du devis :</label>
+                <table id="detailsTable">
+                    <thead>
+                        <tr>
+                            <th>Libellé</th>
+                            <th>Prix Unitaire (PU)</th>
+                            <th>Quantité (Qte)</th>
+                            <th>Montant</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Les lignes seront ajoutées dynamiquement ici -->
+                    </tbody>
+                </table>
+                <button type="button" id="ajouterLigne">Ajouter une ligne</button>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" id="submitBtn">Valider</button>
+            </div>
+    </form>
+
+
+
+<script src="/js/devis-details.js"></script>
+
+</body>
+</html>

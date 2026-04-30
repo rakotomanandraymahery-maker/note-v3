@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Clients et Demandes</title>
+    <link rel="stylesheet" th:href="@{/css/client.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: navbar (activePage=${activePage})}"></div>
+
+    <div class="main-content">
+        
+        <div class="client-block">
+
+            <div class="form-section">
+                <h2>Insertion/Modification Client</h2>
+                <form id="clientForm" th:action="@{/clients/save}" method="post">
+                    <input type="hidden" id="clientId" name="id" th:value="${selectedClient != null ? selectedClient.id : ''}">
+                    <div class="form-group">
+                        <label for="nom">Nom:</label>
+                        <input type="text" id="nom" name="nom" th:value="${selectedClient != null ? selectedClient.nom : ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact:</label>
+                        <input type="text" id="contact" name="contact" th:value="${selectedClient != null ? selectedClient.contact : ''}" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">Enregistrer</button>
+                        <button type="button" class="btn-clear" onclick="clearForm()">Vider</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="list-section" th:if="${clients != null && !clients.isEmpty}">
+                <h2>Liste des Clients</h2>
+                <table class="client-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="client : ${clients}">
+                            <td th:text="${client.id}"></td>
+                            <td th:text="${client.nom}"></td>
+                            <td th:text="${client.contact}"></td>
+                            <td class="actions">
+                                <button class="btn-edit"><a th:href="@{/clients/{id}(id=${client.id})}">Modifier</a></button>
+                                <button class="btn-delete"><a th:href="@{/clients/delete/{id}(id=${client.id})}">Supprimer</a></button>
+                                <button class="btn-details"><a th:href="@{/clients/{id}(id=${client.id})}">Demandes</a></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="details-section" th:if="${selectedClient != null && !clientDemandes.isEmpty}">
+         
+            <h3>Liste des Demandes de : <strong th:text="${selectedClient.nom}">User</strong></h3>
+            
+            <table class="demande-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Lieu</th>
+                        <th>Statut</th>
+                        <th>District</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="demande : ${clientDemandes}">
+                        <td th:text="${demande.id}"></td>
+                        <td th:text="${demande.date}"></td>
+                        <td th:text="${demande.lieu}"></td>
+                        <td th:text="${demande.getStatutActuel() != null ? demande.getStatutActuel().nom : 'N/A'}"></td>
+                        <td th:text="${demande.district}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${selectedClient != null && clientDemandes.isEmpty}">
+            <p style="margin-left: 40%; margin-top: 5%;">Aucun Demande pour <strong th:text="${selectedClient.nom} + .">User</strong></p>
+        </div>
+        
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+    
+    <script>
+        
+        function clearForm() {
+            document.getElementById('clientId').value = '';
+            document.getElementById('nom').value = '';
+            document.getElementById('contact').value = '';
+        }
+        
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            if(message) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = message;
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 3000);
+            }
+        };
+    </script>
+</body>
+</html>

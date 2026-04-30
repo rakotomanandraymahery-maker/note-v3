@@ -1,0 +1,3 @@
+src/main/resources/application.properties
+sql/donnee.sql
+target/

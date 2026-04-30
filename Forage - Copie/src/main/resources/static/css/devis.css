@@ -1,0 +1,188 @@
+.main-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+/* Card Styling */
+#devisForm, .list-devis, .devis-details, .client-table-container, .demande-table-container {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+/* Form Styling */
+.form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.form-group input, .form-group select {
+    padding: 0.8rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+}
+
+th {
+    text-align: left;
+    padding: 1rem;
+    background-color: var(--bg-light);
+    color: #666;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Buttons */
+button, .btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+#ajouterLigne {
+    background-color: var(--bg-light);
+    color: var(--primary-color);
+    border: 1px dashed #ccc;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+#ajouterLigne:hover {
+    background-color: #eee;
+    border-color: #999;
+}
+
+#submitBtn {
+    background-color: var(--accent-color);
+    color: var(--white);
+    padding: 1rem 2rem;
+    font-size: 1rem;
+}
+
+#submitBtn:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn-delete a, .btn-details a, .btn-edit a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.btn-delete { background-color: #fee2e2; color: #dc2626; margin-right: 0.5rem; }
+.btn-delete:hover { background-color: #fecaca; }
+
+.btn-details { background-color: #e0f2fe; color: #0284c7; margin-right: 0.5rem; }
+.btn-details:hover { background-color: #bae6fd; }
+
+.btn-edit { background-color: #f0fdf4; color: #16a34a; }
+.btn-edit:hover { background-color: #dcfce7; }
+
+/* Search Results Card */
+.resultat-card {
+    background: #f0f7ff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #cce3ff;
+    margin-top: 1rem;
+}
+
+.resultat-title {
+    font-weight: 700;
+    color: #0052cc;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.info-value {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Revenue Card */
+.chiffreAffaire {
+    text-align: center;
+    padding: 3rem;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+
+#montant {
+    font-size: 4rem;
+    color: var(--accent-color);
+    font-weight: 800;
+    display: block;
+    margin: 1rem 0;
+}
